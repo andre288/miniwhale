@@ -1,0 +1,67 @@
+services:
+    api:
+        container_name: miniwhale-api
+        build: 
+            context: ./api
+            dockerfile: Dockerfile
+        ports:
+            - "5000:5000"
+        volumes:
+            - /var/run/docker.sock:/var/run/dcoker.sock
+            - data:/app/data
+        env_file:
+            - .env
+        restart: unless-stopped
+        networks:
+            - miniwhale
+
+    webapp:
+        container_name: miniwhale-webapp
+        build:
+            context: ./webapp
+            dockerfile: Dockerfile
+        ports:
+            - "3002:3000"
+        env_file:
+            - .env
+        depends_on:
+            - api
+        restart: unless-stopped
+        networks:
+            - miniwhale
+
+    # Dummy container that just prints fake logs on a loop, so you have
+    # something for the dashboard to pick up without needing a real app.
+    test-log-generator:
+        image: alpine:3.20
+        container_name: miniwhale-test-log-generator
+        command: >
+            sh -c "
+            i=0;
+            while true; do
+                i=$$((i+1));
+                echo \"[INFO] tick $$i: service healthy\";
+                if [ $$((i % 5)) -eq 0 ]; then
+                echo \"[WARNING] response time degraded: 842ms\";
+                fi;
+                if [ $$((i % 9)) -eq 0 ]; then
+                echo \"[ERROR] Traceback (most recent call last): ConnectionError: could not reach db:5432\";
+                fi;
+                if [ $$((i % 17)) -eq 0 ]; then
+                echo \"[CRITICAL] OOMKilled: process exceeded memory limit (512Mi)\";
+                fi;
+                sleep 3;
+            done
+            "
+        restart: unless-stopped
+        networks:
+            - miniwhale
+
+
+networks:
+    miniwhale:
+        name: miniwhale
+        driver: bridge
+
+volumes:
+    data:
