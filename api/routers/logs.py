@@ -7,7 +7,7 @@ from exceptions import ContainerNotFoundError
 router = APIRouter(prefix="/container/{container_id}", tags=["logs"])
 
 @router.get("/logs")
-def get_container(container_id: str):
+def get_container_log(container_id: str):
     
     try:
         logs = get_logs(container_id)
@@ -16,7 +16,7 @@ def get_container(container_id: str):
         raise HTTPException(status_code=404, detail=str(e))
 
     except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
     
     return logs
 
