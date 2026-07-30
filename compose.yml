@@ -7,8 +7,9 @@ services:
         ports:
             - "5000:5000"
         volumes:
-            - /var/run/docker.sock:/var/run/dcoker.sock
+            - /var/run/docker.sock:/var/run/docker.sock
             - data:/app/data
+            - ./api/:/app
         env_file:
             - .env
         restart: unless-stopped

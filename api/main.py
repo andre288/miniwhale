@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers import containers, logs, errors 
 
 app = FastAPI(title="Miniwhale API")
 
@@ -10,19 +11,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(containers.router)
+app.include_router(logs.router)
+app.include_router(errors.router)
 
 @app.get("/")
 def root():
     return {"status": "ok", "service": "miniwhale-api"}
-
-
-@app.get("/containers")
-def list_containers():
-    # Placeholder — real implementation will query the Docker SDK
-    return {"containers": []}
-
-
-@app.get("/errors")
-def list_errors():
-    # Placeholder — real implementation will return grouped, AI-analyzed errors
-    return {"errors": []}
