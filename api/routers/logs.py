@@ -6,9 +6,10 @@ from exceptions import ContainerNotFoundError
 
 router = APIRouter(prefix="/container/{container_id}", tags=["logs"])
 
+
 @router.get("/logs")
 def get_container_log(container_id: str):
-    
+
     try:
         logs = get_logs(container_id)
 
@@ -17,7 +18,7 @@ def get_container_log(container_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
     return logs
 
 
@@ -29,6 +30,7 @@ async def stream_logs(container_id: str, request: Request):
     except aiodocker.exceptions.DockerContainerError as e:
         await client.close()
         if e.status == 404:
-            raise HTTPException(status_code=404, detail=f"Container {container_id} not found")
+            raise HTTPException(
+                status_code=404, detail=f"Container {container_id} not found")
         raise HTTPException(status_code=500, detail=e.message)
     return StreamingResponse(generate_logs(client, container_id, request), media_type="text/plain")

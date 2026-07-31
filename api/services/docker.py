@@ -20,7 +20,7 @@ def get_containers():
             "name": c.name,
             "status": c.status,
         } for c in containers
-        ]
+    ]
 
 
 def get_logs(container_id):
@@ -33,16 +33,19 @@ def get_logs(container_id):
         raise ContainerNotFoundError(container_id)
 
     return {
-            "short_id": container.short_id,
-            "name": container.name, 
-            "logs": logs
-        }
+        "short_id": container.short_id,
+        "name": container.name,
+        "logs": logs
+    }
 
 
 async def generate_logs(client, container_id: str, request: Request):
     try:
         container = client.containers.container(container_id)
-        log_stream = container.log(stdout=True, stderr=True, follow=True).__aiter__()
+        log_stream = container.log(
+            stdout=True,
+            stderr=True,
+            follow=True).__aiter__()
 
         while True:
             if await request.is_disconnected():
