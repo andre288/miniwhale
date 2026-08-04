@@ -1,10 +1,12 @@
-# https://github.com/docker/docker-py
+from fastapi import Request
 
 import docker
 import aiodocker
-from fastapi import Request
-from exceptions import ContainerNotFoundError
 import asyncio
+
+from exceptions import ContainerNotFoundError
+
+
 try:
     client = docker.from_env()
 except docker.errors.APIError as e:

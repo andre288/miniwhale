@@ -1,5 +1,5 @@
 from unittest.mock import Mock, patch
-from services.docker import get_containers
+from api.services.docker import get_containers
 
 
 def test_get_containers():

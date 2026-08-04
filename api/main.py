@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import containers, logs, errors
+from api.routers import containers, errors
+from routers import logs
 
 app = FastAPI(title="Miniwhale API")
 

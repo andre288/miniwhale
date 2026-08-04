@@ -1,5 +1,5 @@
 from unittest.mock import Mock, patch
-from services.docker import get_logs
+from api.services.docker import get_logs
 from exceptions import ContainerNotFoundError
 import docker
 import pytest
